@@ -1,0 +1,119 @@
+{
+  "nodes": {
+    "darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1648278671,
+        "narHash": "sha256-1WrR9ex+rKTjZtODNUZQhkWYUprtfOkjOyo9YWL2NMs=",
+        "owner": "LnL7",
+        "repo": "nix-darwin",
+        "rev": "4fdbb8168f61d31d3f90bb0d07f48de709c4fe79",
+        "type": "github"
+      },
+      "original": {
+        "owner": "LnL7",
+        "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1648297722,
+        "narHash": "sha256-W+qlPsiZd8F3XkzXOzAoR+mpFqzm3ekQkJNa+PIh1BQ=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "0f8662f1319ad6abf89b3380dd2722369fc51ade",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1648834319,
+        "narHash": "sha256-i5Aj4Aw64D/A0X6XW5LxSS4XBnYj7gMz+kN4dpsbdk8=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "0bdbdea2e26c984b096f4f7d10e3c88536a980b0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "release-21.11",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1648219316,
+        "narHash": "sha256-Ctij+dOi0ZZIfX5eMhgwugfvB+WZSrvVNAyAuANOsnQ=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "30d3d79b7d3607d56546dd2a6b49e156ba0ec634",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "plugin-direnv": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1648998572,
+        "narHash": "sha256-81OFtPv0VThreRW8/Tcp/uT8BVzVEFI84vuC6yKtyU0=",
+        "owner": "asdf-community",
+        "repo": "asdf-direnv",
+        "rev": "4de6520e6b3b78c48854e63497acd005fcc83dda",
+        "type": "github"
+      },
+      "original": {
+        "owner": "asdf-community",
+        "ref": "v0.3.0",
+        "repo": "asdf-direnv",
+        "type": "github"
+      }
+    },
+    "plugin-nodejs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1647281008,
+        "narHash": "sha256-mrfyfnCo4fRrTmIxSyTN1dQvFdjtgbL45BrvMYZA4Fg=",
+        "owner": "asdf-vm",
+        "repo": "asdf-nodejs",
+        "rev": "f9957f3f256ebbb3fdeebcaed5082ad305222be6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "asdf-vm",
+        "repo": "asdf-nodejs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "darwin": "darwin",
+        "flake-utils": "flake-utils",
+        "home-manager": "home-manager",
+        "nixpkgs": "nixpkgs",
+        "plugin-direnv": "plugin-direnv",
+        "plugin-nodejs": "plugin-nodejs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
