@@ -87,6 +87,38 @@
         "type": "github"
       }
     },
+    "plugin-kubectl": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1646672034,
+        "narHash": "sha256-7Gf7SnRwtmW13F1cf9M57hQ+fRMUHP2YC4/nuNabP4M=",
+        "owner": "asdf-community",
+        "repo": "asdf-kubectl",
+        "rev": "11ac5c3b0f403f7ead0b4a65bfbb04381ac8139e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "asdf-community",
+        "repo": "asdf-kubectl",
+        "type": "github"
+      }
+    },
+    "plugin-kustomize": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1649341580,
+        "narHash": "sha256-WGLL5hUmFRfp7NDbankrmY5if9dRq/cNJEXBB3DwBA4=",
+        "owner": "Banno",
+        "repo": "asdf-kustomize",
+        "rev": "2efaa38011e7ea05c90cfe2ef5ec81d232adfa11",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Banno",
+        "repo": "asdf-kustomize",
+        "type": "github"
+      }
+    },
     "plugin-nodejs": {
       "flake": false,
       "locked": {
@@ -103,6 +135,22 @@
         "type": "github"
       }
     },
+    "plugin-skaffold": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1647111673,
+        "narHash": "sha256-u5c7kwBlDlk/C3rAW2HVDiNVjNwV2y4WflniLpSIOzM=",
+        "owner": "nklmilojevic",
+        "repo": "asdf-skaffold",
+        "rev": "bf2f9922ddfc4d8613a2d92f3fedc458464e36e6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nklmilojevic",
+        "repo": "asdf-skaffold",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "darwin": "darwin",
@@ -110,7 +158,10 @@
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "plugin-direnv": "plugin-direnv",
-        "plugin-nodejs": "plugin-nodejs"
+        "plugin-kubectl": "plugin-kubectl",
+        "plugin-kustomize": "plugin-kustomize",
+        "plugin-nodejs": "plugin-nodejs",
+        "plugin-skaffold": "plugin-skaffold"
       }
     }
   },

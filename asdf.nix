@@ -33,6 +33,9 @@ in
       type = with types; listOf (enum [
         "direnv"
         "nodejs"
+        "skaffold"
+        "kubectl"
+        "kustomize"
       ]);
       description = "What plugins to install";
       default = [ ];

@@ -125,10 +125,6 @@ in
             assertion = hasPackage "asdf-vm" config;
             message = "ASDF should be included as a package";
           }
-          #{
-          #  assertion = lib.strings.hasInfix "node-build" config.home-manager.users.test.home.sessionVariables.ASDF_NODEJS_NODEBUILD_HOME;
-          #  message = "Node build not configured";
-          #}
         ];
       })
     ];

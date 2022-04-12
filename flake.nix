@@ -24,6 +24,22 @@
       url = "github:asdf-vm/asdf-nodejs";
       flake = false;
     };
+
+    plugin-skaffold = {
+      url = "github:nklmilojevic/asdf-skaffold";
+      flake = false;
+    };
+
+    plugin-kubectl = {
+      url = "github:asdf-community/asdf-kubectl";
+      flake = false;
+    };
+
+    plugin-kustomize = {
+      url = "github:Banno/asdf-kustomize";
+      flake = false;
+    };
+
   };
   outputs = inputs@{ self, darwin, home-manager, nixpkgs, flake-utils, ... }:
     flake-utils.lib.eachSystem [
