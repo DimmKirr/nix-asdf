@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: Run Nix checks
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run disabled check
+        run: nix build .#checks.$(uname -m)-darwin.disabled -L
+
+      - name: Run withoutDirenv check
+        run: nix build .#checks.$(uname -m)-darwin.withoutDirenv -L
+
+      - name: Run withDirenv check
+        run: nix build .#checks.$(uname -m)-darwin.withDirenv -L
+
+      - name: Run withNodejs check
+        run: nix build .#checks.$(uname -m)-darwin.withNodejs -L
+
+      - name: Run withGolang check
+        run: nix build .#checks.$(uname -m)-darwin.withGolang -L
+
+      - name: Run withTerraform check
+        run: nix build .#checks.$(uname -m)-darwin.withTerraform -L
+
+      - name: Run withOpenTofu check
+        run: nix build .#checks.$(uname -m)-darwin.withOpenTofu -L
+
+      - name: Run withRuby check
+        run: nix build .#checks.$(uname -m)-darwin.withRuby -L
+
+      - name: Run withPython check
+        run: nix build .#checks.$(uname -m)-darwin.withPython -L
+
+      - name: Run withMultiplePlugins check
+        run: nix build .#checks.$(uname -m)-darwin.withMultiplePlugins -L
