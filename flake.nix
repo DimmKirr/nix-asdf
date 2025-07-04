@@ -2,6 +2,8 @@
   description = "ASDF for nix";
 
   inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-24.11-darwin";
+    
     darwin = {
       url = "github:LnL7/nix-darwin/nix-darwin-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -45,22 +47,28 @@
     {
       self,
       nixpkgs,
+      darwin,
       home-manager,
       flake-utils,
       ...
     }:
-    {
+    flake-utils.lib.eachDefaultSystem (system: {
+      nixosModule = self.homeManagerModules.default;
+      
+      checks = import ./checks.nix {
+        inherit self darwin system home-manager;
+        lib = nixpkgs.lib;
+      };
+    }) // {
       homeManagerModules.default = import ./asdf.nix;
 
       darwinModules.default =
         {
           pkgs,
-
           ...
         }:
         {
 
         };
     };
-
 }

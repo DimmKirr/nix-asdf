@@ -59,6 +59,41 @@ programs.asdf = {
 };
 ```
 
+## Development
+
+### Running Tests
+
+This project uses [Task](https://taskfile.dev) to run tests locally. To run all tests:
+
+```bash
+# Install Task if you don't have it
+brew install go-task
+
+# Run all tests
+task check:all
+
+# Run a specific test
+task check:withGolang
+```
+
+Available test tasks:
+
+- `check:all` - Run all checks
+- `check:disabled` - Test with ASDF disabled
+- `check:withoutDirenv` - Test ASDF without direnv
+- `check:withDirenv` - Test ASDF with direnv
+- `check:withNodejs` - Test NodeJS plugin
+- `check:withGolang` - Test Golang plugin
+- `check:withTerraform` - Test Terraform plugin
+- `check:withOpenTofu` - Test OpenTofu plugin
+- `check:withRuby` - Test Ruby plugin
+- `check:withPython` - Test Python plugin
+- `check:withMultiplePlugins` - Test multiple plugins together
+
+### CI Pipeline
+
+The project uses GitHub Actions for continuous integration. The CI pipeline runs all tests on macOS to ensure compatibility.
+
 ## Implementation Details
 
 - Uses the official asdf-vm package from nixpkgs

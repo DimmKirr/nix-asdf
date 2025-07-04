@@ -28,32 +28,11 @@ jobs:
             experimental-features = nix-command flakes
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run disabled check
-        run: nix build .#checks.$(uname -m)-darwin.disabled -L
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run withoutDirenv check
-        run: nix build .#checks.$(uname -m)-darwin.withoutDirenv -L
-
-      - name: Run withDirenv check
-        run: nix build .#checks.$(uname -m)-darwin.withDirenv -L
-
-      - name: Run withNodejs check
-        run: nix build .#checks.$(uname -m)-darwin.withNodejs -L
-
-      - name: Run withGolang check
-        run: nix build .#checks.$(uname -m)-darwin.withGolang -L
-
-      - name: Run withTerraform check
-        run: nix build .#checks.$(uname -m)-darwin.withTerraform -L
-
-      - name: Run withOpenTofu check
-        run: nix build .#checks.$(uname -m)-darwin.withOpenTofu -L
-
-      - name: Run withRuby check
-        run: nix build .#checks.$(uname -m)-darwin.withRuby -L
-
-      - name: Run withPython check
-        run: nix build .#checks.$(uname -m)-darwin.withPython -L
-
-      - name: Run withMultiplePlugins check
-        run: nix build .#checks.$(uname -m)-darwin.withMultiplePlugins -L
+      - name: Run all checks
+        run: nix flake check -L --keep-going

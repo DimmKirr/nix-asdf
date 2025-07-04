@@ -5,7 +5,6 @@ in
 {
   disabled = (darwin.lib.darwinSystem {
     inherit system;
-
     modules = [
       home-manager.darwinModules.home-manager
       self.nixosModule
@@ -33,7 +32,6 @@ in
   }).system;
   withoutDirenv = (darwin.lib.darwinSystem {
     inherit system;
-
     modules = [
       home-manager.darwinModules.home-manager
       self.nixosModule
@@ -42,7 +40,7 @@ in
         users.users.test = { };
         home-manager.users.test = {
           home.stateVersion = "21.11";
-          asdf = {
+          programs.asdf = {
             enable = true;
           };
         };
@@ -61,7 +59,6 @@ in
   }).system;
   withDirenv = (darwin.lib.darwinSystem {
     inherit system;
-
     modules = [
       home-manager.darwinModules.home-manager
       self.nixosModule
@@ -70,9 +67,11 @@ in
         users.users.test = { };
         home-manager.users.test = {
           home.stateVersion = "21.11";
-          asdf = {
+          programs.asdf = {
             enable = true;
-            direnv = true;
+            direnv = {
+              enable = true;
+            };
           };
         };
         assertions = [
@@ -94,7 +93,6 @@ in
   }).system;
   withNodejs = (darwin.lib.darwinSystem {
     inherit system;
-
     modules = [
       home-manager.darwinModules.home-manager
       self.nixosModule
@@ -103,12 +101,14 @@ in
         users.users.test = { };
         home-manager.users.test = {
           home.stateVersion = "21.11";
-          asdf = {
+          programs.asdf = {
             enable = true;
-            direnv = true;
+            direnv = {
+              enable = true;
+            };
             nodejs = {
               enable = true;
-              npmDefaultPackages = [ "yarn" ];
+              defaultPackages = [ "yarn" ];
             };
           };
         };
@@ -132,7 +132,6 @@ in
   
   withGolang = (darwin.lib.darwinSystem {
     inherit system;
-
     modules = [
       home-manager.darwinModules.home-manager
       self.nixosModule
@@ -141,7 +140,7 @@ in
         users.users.test = { };
         home-manager.users.test = {
           home.stateVersion = "21.11";
-          asdf = {
+          programs.asdf = {
             enable = true;
             golang = {
               enable = true;
@@ -169,7 +168,6 @@ in
   
   withTerraform = (darwin.lib.darwinSystem {
     inherit system;
-
     modules = [
       home-manager.darwinModules.home-manager
       self.nixosModule
@@ -178,7 +176,7 @@ in
         users.users.test = { };
         home-manager.users.test = {
           home.stateVersion = "21.11";
-          asdf = {
+          programs.asdf = {
             enable = true;
             terraform = {
               enable = true;
@@ -206,7 +204,6 @@ in
   
   withOpenTofu = (darwin.lib.darwinSystem {
     inherit system;
-
     modules = [
       home-manager.darwinModules.home-manager
       self.nixosModule
@@ -215,7 +212,7 @@ in
         users.users.test = { };
         home-manager.users.test = {
           home.stateVersion = "21.11";
-          asdf = {
+          programs.asdf = {
             enable = true;
             opentofu = {
               enable = true;
@@ -243,7 +240,6 @@ in
   
   withRuby = (darwin.lib.darwinSystem {
     inherit system;
-
     modules = [
       home-manager.darwinModules.home-manager
       self.nixosModule
@@ -252,7 +248,7 @@ in
         users.users.test = { };
         home-manager.users.test = {
           home.stateVersion = "21.11";
-          asdf = {
+          programs.asdf = {
             enable = true;
             ruby = {
               enable = true;
@@ -285,7 +281,6 @@ in
   
   withPython = (darwin.lib.darwinSystem {
     inherit system;
-
     modules = [
       home-manager.darwinModules.home-manager
       self.nixosModule
@@ -294,7 +289,7 @@ in
         users.users.test = { };
         home-manager.users.test = {
           home.stateVersion = "21.11";
-          asdf = {
+          programs.asdf = {
             enable = true;
             python = {
               enable = true;
@@ -327,7 +322,6 @@ in
   
   withMultiplePlugins = (darwin.lib.darwinSystem {
     inherit system;
-
     modules = [
       home-manager.darwinModules.home-manager
       self.nixosModule
@@ -336,9 +330,11 @@ in
         users.users.test = { };
         home-manager.users.test = {
           home.stateVersion = "21.11";
-          asdf = {
+          programs.asdf = {
             enable = true;
-            direnv = true;
+            direnv = {
+              enable = true;
+            };
             nodejs = {
               enable = true;
               defaultVersion = "22.14.0";
