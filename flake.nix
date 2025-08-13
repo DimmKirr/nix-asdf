@@ -2,13 +2,15 @@
   description = "ASDF for nix";
 
   inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-24.11-darwin";
+    
     darwin = {
-      url = "github:LnL7/nix-darwin";
+      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-21.11";
+      url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -39,50 +41,34 @@
       url = "github:Banno/asdf-kustomize";
       flake = false;
     };
-
   };
-  outputs = inputs@{ self, darwin, home-manager, nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachSystem [
-      flake-utils.lib.system.x86_64-darwin
-      flake-utils.lib.system.aarch64-darwin
-    ]
-      (system:
-        let
-          p = import nixpkgs {
-            inherit system;
-          };
-        in
+
+  outputs =
+    {
+      self,
+      nixpkgs,
+      darwin,
+      home-manager,
+      flake-utils,
+      ...
+    }:
+    flake-utils.lib.eachDefaultSystem (system: {
+      nixosModule = self.homeManagerModules.default;
+      
+      checks = import ./checks.nix {
+        inherit self darwin system home-manager;
+        lib = nixpkgs.lib;
+      };
+    }) // {
+      homeManagerModules.default = import ./asdf.nix;
+
+      darwinModules.default =
+        {
+          pkgs,
+          ...
+        }:
         {
 
-          checks = (import ./checks.nix) {
-            lib = nixpkgs.lib;
-            inherit
-              darwin
-              system
-              home-manager
-              self;
-          };
-          devShell = (import ./shell.nix) {
-            pkgs = p;
-          };
-        }
-      ) // {
-      nixosModule = {
-        home-manager.sharedModules = [
-          ./asdf.nix
-          ({ config, lib, pkgs, ... }:
-            {
-              home.file = builtins.listToAttrs
-                (builtins.map
-                  (x: {
-                    name = ".asdf/plugins/${x}";
-                    value = {
-                      source = inputs."plugin-${x}";
-                    };
-                  })
-                  config.asdf.plugins);
-            })
-        ];
-      };
+        };
     };
 }
