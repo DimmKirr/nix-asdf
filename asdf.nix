@@ -229,7 +229,7 @@ in {
                 ++ (optional (cfg.ruby.enable && cfg.ruby.defaultVersion != "") "ruby ${cfg.ruby.defaultVersion}")
                 ++ (optional (cfg.python.enable && cfg.python.defaultVersion != "") "python ${cfg.python.defaultVersion}")
                 ++ (optional (cfg.terraform.enable && cfg.terraform.defaultVersion != "") "terraform ${cfg.terraform.defaultVersion}")
-                ++ (optional (cfg.opentofu.enable && cfg.opentofu.defaultVersion != "") "terraform ${cfg.opentofu.defaultVersion}")
+                ++ (optional (cfg.opentofu.enable && cfg.opentofu.defaultVersion != "") "opentofu ${cfg.opentofu.defaultVersion}")
                 ++ (optional (cfg.golang.enable && cfg.golang.defaultVersion != "") "golang ${cfg.golang.defaultVersion}");
             in
               mkIf (toolVersions != []) {
