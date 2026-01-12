@@ -53,13 +53,12 @@
       ...
     }:
     flake-utils.lib.eachDefaultSystem (system: {
-      nixosModule = self.homeManagerModules.default;
-      
       checks = import ./checks.nix {
         inherit self darwin system home-manager nixpkgs;
         lib = nixpkgs.lib;
       };
     }) // {
+      nixosModules.default = import ./asdf.nix;
       homeManagerModules.default = import ./asdf.nix;
 
       darwinModules.default =

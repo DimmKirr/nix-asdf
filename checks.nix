@@ -10,7 +10,7 @@ let
         inherit system;
         modules = [
           home-manager.darwinModules.home-manager
-          self.nixosModule
+          self.homeManagerModules.default
           ({ config, pkgs, lib, ... }: {
             home-manager.useGlobalPkgs = true;
             users.users.test = { };
