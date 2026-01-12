@@ -288,6 +288,10 @@ in {
               '')
               cfg.plugins}
 
+              # Update all plugins to latest versions
+              echo "Updating plugins..."
+              ${cfg.package}/bin/asdf plugin update --all
+
               # Install configured tool versions
               if [ -f "$HOME/.tool-versions" ]; then
                 echo "Installing configured tool versions..."
