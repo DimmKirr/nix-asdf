@@ -87,7 +87,7 @@ in {
           defaultPackages = mkOption {
             type = with types; listOf str;
             description = "Packages to install by default";
-            default = "";
+            default = [];
           };
 
           defaultVersion = mkOption {
@@ -229,7 +229,7 @@ in {
                 ++ (optional (cfg.ruby.enable && cfg.ruby.defaultVersion != "") "ruby ${cfg.ruby.defaultVersion}")
                 ++ (optional (cfg.python.enable && cfg.python.defaultVersion != "") "python ${cfg.python.defaultVersion}")
                 ++ (optional (cfg.terraform.enable && cfg.terraform.defaultVersion != "") "terraform ${cfg.terraform.defaultVersion}")
-                ++ (optional (cfg.opentofu.enable && cfg.opentofu.defaultVersion != "") "terraform ${cfg.opentofu.defaultVersion}")
+                ++ (optional (cfg.opentofu.enable && cfg.opentofu.defaultVersion != "") "opentofu ${cfg.opentofu.defaultVersion}")
                 ++ (optional (cfg.golang.enable && cfg.golang.defaultVersion != "") "golang ${cfg.golang.defaultVersion}");
             in
               mkIf (toolVersions != []) {
@@ -247,7 +247,7 @@ in {
         ];
 
         # Add activation script to install plugins
-        activation.installAsdfPlugins = hm.dag.entryAfter ["writeBoundary" "linkGeneration"] (
+        activation.installAsdfPlugins = lib.hm.dag.entryAfter ["writeBoundary" "linkGeneration"] (
           let
             # Filter out non-package items and create path stringf
             packageBinPaths = concatStringsSep ":" (
@@ -287,6 +287,10 @@ in {
                 fi
               '')
               cfg.plugins}
+
+              # Update all plugins to latest versions
+              echo "Updating plugins..."
+              ${cfg.package}/bin/asdf plugin update --all
 
               # Install configured tool versions
               if [ -f "$HOME/.tool-versions" ]; then
