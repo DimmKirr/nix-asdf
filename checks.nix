@@ -10,12 +10,13 @@ let
         inherit system;
         modules = [
           home-manager.darwinModules.home-manager
-          self.homeManagerModules.default
           ({ config, pkgs, lib, ... }: {
+            system.stateVersion = 6;
+            users.users.test.home = "/Users/test";
             home-manager.useGlobalPkgs = true;
-            users.users.test = { };
+            home-manager.sharedModules = [ self.homeManagerModules.default ];
             home-manager.users.test = {
-              home.stateVersion = "24.11";
+              home.stateVersion = "25.11";
             } // hmConfig;
             assertions = map (a: a config.home-manager.users.test) assertions;
           })
@@ -29,7 +30,7 @@ let
           ({ config, pkgs, lib, ... }: {
             home.username = "test";
             home.homeDirectory = "/home/test";
-            home.stateVersion = "24.11";
+            home.stateVersion = "25.11";
             assertions = map (a: a config) assertions;
           } // hmConfig)
         ];
