@@ -1,78 +1,12 @@
 version: '3'
 
 tasks:
-  default:
-    desc: List available tasks
+  test:
+    desc: Run all Nix flake checks
     cmds:
-      - task --list
+      - nix flake check -L --keep-going
 
-  check:all:
-    desc: Run all checks
+  update:
+    desc: Update flake inputs
     cmds:
-      - nix build .#homeManagerModules.default --dry-run
-      - echo "✅ Module builds successfully"
-      - task: check:golang
-      - task: check:terraform
-      - task: check:opentofu
-      - task: check:ruby
-      - task: check:python
-      - task: check:multiple
-
-  check:golang:
-    desc: Verify Golang plugin configuration
-    cmds:
-      - |
-        echo "Checking Golang plugin configuration..."
-        grep -q "golang = {" asdf.nix && 
-        grep -q "defaultVersion = \"1.24.3\"" asdf.nix && 
-        grep -q "asdf plugin add \"golang\" https://github.com/asdf-community/asdf-golang.git" asdf.nix &&
-        echo "✅ Golang plugin configuration verified"
-
-  check:terraform:
-    desc: Verify Terraform plugin configuration
-    cmds:
-      - |
-        echo "Checking Terraform plugin configuration..."
-        grep -q "terraform = {" asdf.nix && 
-        grep -q "terraform" asdf.nix &&
-        echo "✅ Terraform plugin configuration verified"
-
-  check:opentofu:
-    desc: Verify OpenTofu plugin configuration
-    cmds:
-      - |
-        echo "Checking OpenTofu plugin configuration..."
-        grep -q "opentofu = {" asdf.nix && 
-        grep -q "opentofu" asdf.nix &&
-        echo "✅ OpenTofu plugin configuration verified"
-
-  check:ruby:
-    desc: Verify Ruby plugin configuration
-    cmds:
-      - |
-        echo "Checking Ruby plugin configuration..."
-        grep -q "ruby = {" asdf.nix && 
-        grep -q "ruby" asdf.nix &&
-        echo "✅ Ruby plugin configuration verified"
-
-  check:python:
-    desc: Verify Python plugin configuration
-    cmds:
-      - |
-        echo "Checking Python plugin configuration..."
-        grep -q "python = {" asdf.nix && 
-        grep -q "python" asdf.nix &&
-        echo "✅ Python plugin configuration verified"
-
-  check:multiple:
-    desc: Verify multiple plugins support
-    cmds:
-      - |
-        echo "Checking multiple plugins support..."
-        grep -q "supportedPlugins = \[" asdf.nix &&
-        grep -q "\"golang\"" asdf.nix &&
-        grep -q "\"terraform\"" asdf.nix &&
-        grep -q "\"opentofu\"" asdf.nix &&
-        grep -q "\"ruby\"" asdf.nix &&
-        grep -q "\"python\"" asdf.nix &&
-        echo "✅ Multiple plugins support verified"
+      - nix flake update

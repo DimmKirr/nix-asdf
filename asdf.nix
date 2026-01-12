@@ -87,7 +87,7 @@ in {
           defaultPackages = mkOption {
             type = with types; listOf str;
             description = "Packages to install by default";
-            default = "";
+            default = [];
           };
 
           defaultVersion = mkOption {

@@ -2,7 +2,7 @@
   description = "ASDF for nix";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
 
     darwin = {
       url = "github:LnL7/nix-darwin/nix-darwin-25.11";
@@ -56,7 +56,7 @@
       nixosModule = self.homeManagerModules.default;
       
       checks = import ./checks.nix {
-        inherit self darwin system home-manager;
+        inherit self darwin system home-manager nixpkgs;
         lib = nixpkgs.lib;
       };
     }) // {
