@@ -58,7 +58,6 @@
         lib = nixpkgs.lib;
       };
     }) // {
-      nixosModules.default = import ./asdf.nix;
       homeManagerModules.default = import ./asdf.nix;
 
       darwinModules.default =

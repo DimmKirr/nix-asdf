@@ -247,7 +247,7 @@ in {
         ];
 
         # Add activation script to install plugins
-        activation.installAsdfPlugins = hm.dag.entryAfter ["writeBoundary" "linkGeneration"] (
+        activation.installAsdfPlugins = lib.hm.dag.entryAfter ["writeBoundary" "linkGeneration"] (
           let
             # Filter out non-package items and create path stringf
             packageBinPaths = concatStringsSep ":" (
