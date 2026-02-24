@@ -321,21 +321,23 @@ in {
                 ${cfg.package}/bin/asdf plugin update --all
               ''}
 
-              # Install configured tool versions
-              if [ -f "$HOME/.tool-versions" ]; then
-                echo "Installing configured tool versions..."
-                ${cfg.package}/bin/asdf install
-              fi
+              ${optionalString (!cfg.skipPluginSync) ''
+                # Install configured tool versions
+                if [ -f "$HOME/.tool-versions" ]; then
+                  echo "Installing configured tool versions..."
+                  ${cfg.package}/bin/asdf install
+                fi
 
-              # Remove plugins that are not configured
-              if [ -n "$installed_plugins" ]; then
-                echo "$installed_plugins" | while read -r plugin; do
-                  if [[ -n "$plugin" ]] && ! echo "${concatStringsSep " " cfg.plugins}" | grep -q "$plugin"; then
-                    echo "Removing unused plugin: $plugin"
-                    ${cfg.package}/bin/asdf plugin remove "$plugin"
-                  fi
-                done
-              fi
+                # Remove plugins that are not configured
+                if [ -n "$installed_plugins" ]; then
+                  echo "$installed_plugins" | while read -r plugin; do
+                    if [[ -n "$plugin" ]] && ! echo "${concatStringsSep " " cfg.plugins}" | grep -q "$plugin"; then
+                      echo "Removing unused plugin: $plugin"
+                      ${cfg.package}/bin/asdf plugin remove "$plugin"
+                    fi
+                  done
+                fi
+              ''}
             fi
           ''
         );
