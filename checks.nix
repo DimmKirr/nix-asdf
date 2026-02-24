@@ -377,4 +377,46 @@ in
       message = "Terraform version should be set in .tool-versions";
     })
   ];
+
+  withSkipPluginSync = mkCheck "withSkipPluginSync" {
+    programs.asdf = {
+      enable = true;
+      skipPluginSync = true;
+      nodejs = {
+        enable = true;
+        defaultVersion = "22.14.0";
+      };
+    };
+  } [
+    (config: {
+      assertion = hasPackage "asdf-vm" config;
+      message = "ASDF should be included as a package";
+    })
+    (config: {
+      assertion = hasPlugin "nodejs" config;
+      message = "NodeJS plugin should still be in the plugins list";
+    })
+    (config: {
+      assertion = hasToolVersion "nodejs" "22.14.0" config;
+      message = "NodeJS version should still be in .tool-versions";
+    })
+    (config: let
+      activationScript = config.home.activation.installAsdfPlugins.data or "";
+    in {
+      assertion = !(lib.strings.hasInfix "asdf install" activationScript);
+      message = "Activation script should not contain 'asdf install' when skipPluginSync is true";
+    })
+    (config: let
+      activationScript = config.home.activation.installAsdfPlugins.data or "";
+    in {
+      assertion = !(lib.strings.hasInfix "asdf plugin add" activationScript);
+      message = "Activation script should not contain 'asdf plugin add' when skipPluginSync is true";
+    })
+    (config: let
+      activationScript = config.home.activation.installAsdfPlugins.data or "";
+    in {
+      assertion = !(lib.strings.hasInfix "asdf plugin update" activationScript);
+      message = "Activation script should not contain 'asdf plugin update' when skipPluginSync is true";
+    })
+  ];
 }
