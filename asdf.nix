@@ -27,6 +27,16 @@ in {
       ];
     };
 
+    skipPluginSync = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Skip running `asdf plugin add` and `asdf plugin update --all` during activation.
+        Useful in container environments where plugins are pre-installed
+        at build time and network access at startup is undesirable.
+      '';
+    };
+
     direnv = mkOption {
       description = "Direnv";
       type = types.submodule {
@@ -293,7 +303,7 @@ in {
               installed_plugins=$(${cfg.package}/bin/asdf plugin list 2>/dev/null || echo "")
 
               # Install configured plugins
-              ${concatMapStringsSep "\n" (plugin: ''
+              ${optionalString (!cfg.skipPluginSync) (concatMapStringsSep "\n" (plugin: ''
                 if ! echo "$installed_plugins" | grep -q "^${plugin}$"; then
                   echo "Installing plugin: ${plugin}"
                   ${if plugin == "golang" then ''
@@ -303,11 +313,13 @@ in {
                   ''}
                 fi
               '')
-              cfg.plugins}
+              cfg.plugins)}
 
               # Update all plugins to latest versions
-              echo "Updating plugins..."
-              ${cfg.package}/bin/asdf plugin update --all
+              ${optionalString (!cfg.skipPluginSync) ''
+                echo "Updating plugins..."
+                ${cfg.package}/bin/asdf plugin update --all
+              ''}
 
               # Install configured tool versions
               if [ -f "$HOME/.tool-versions" ]; then
