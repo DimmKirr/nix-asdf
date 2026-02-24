@@ -31,13 +31,15 @@ The following plugins are currently supported with declarative configuration:
 - **Integration with Home Manager**: Seamlessly works with your existing Nix setup
 - **Default Packages**: Automatically install default packages for supported languages
 - **Tool Versions**: Automatically generates `.tool-versions` file based on your configuration
+- **Compile-time Library Paths**: Automatically exposes `LIBRARY_PATH`, `C_INCLUDE_PATH`, `LD_LIBRARY_PATH`, and `PKG_CONFIG_PATH` from your `home.packages`, so plugins that compile from source (e.g. Python, Ruby) can find Nix-provided libraries
+- **Container-friendly**: Optional `skipPluginSync` to avoid network calls at startup when plugins are pre-installed
 
 ### Example Configuration
 
 ```nix
 programs.asdf = {
   enable = true;
-  
+
   nodejs = {
     enable = true;
     defaultVersion = "22.14.0";
@@ -46,15 +48,31 @@ programs.asdf = {
       "pnpm"
     ];
   };
-  
+
   golang = {
     enable = true;
     defaultVersion = "1.24.3";
   };
-  
+
   ruby = {
     enable = true;
     defaultVersion = "3.4.2";
+  };
+};
+```
+
+### Container / CI Usage
+
+In environments where plugins are pre-installed at build time (e.g. Docker), you can skip the plugin sync step to avoid network calls on every activation:
+
+```nix
+programs.asdf = {
+  enable = true;
+  skipPluginSync = true; # skip `asdf plugin add` and `asdf plugin update --all`
+
+  nodejs = {
+    enable = true;
+    defaultVersion = "22.14.0";
   };
 };
 ```
@@ -63,44 +81,45 @@ programs.asdf = {
 
 ### Running Tests
 
-This project uses [Task](https://taskfile.dev) to run tests locally. To run all tests:
+Tests are Nix flake checks defined in `checks.nix`. Run all checks with:
 
 ```bash
-# Install Task if you don't have it
-brew install go-task
-
-# Run all tests
-task check:all
-
-# Run a specific test
-task check:withGolang
+nix flake check -L --keep-going
 ```
 
-Available test tasks:
+Or using [Task](https://taskfile.dev):
 
-- `check:all` - Run all checks
-- `check:disabled` - Test with ASDF disabled
-- `check:withoutDirenv` - Test ASDF without direnv
-- `check:withDirenv` - Test ASDF with direnv
-- `check:withNodejs` - Test NodeJS plugin
-- `check:withGolang` - Test Golang plugin
-- `check:withTerraform` - Test Terraform plugin
-- `check:withOpenTofu` - Test OpenTofu plugin
-- `check:withRuby` - Test Ruby plugin
-- `check:withPython` - Test Python plugin
-- `check:withMultiplePlugins` - Test multiple plugins together
+```bash
+task test
+```
+
+Available checks:
+
+- `disabled` - ASDF not enabled
+- `withoutDirenv` - ASDF without direnv
+- `withDirenv` - ASDF with direnv
+- `withNodejs` - NodeJS plugin
+- `withGolang` - Golang plugin
+- `withTerraform` - Terraform plugin
+- `withOpenTofu` - OpenTofu plugin
+- `withRuby` - Ruby plugin
+- `withPython` - Python plugin
+- `withSkaffold` - Skaffold plugin
+- `withKubectl` - Kubectl plugin
+- `withKustomize` - Kustomize plugin
+- `withMultiplePlugins` - Multiple plugins together
 
 ### CI Pipeline
 
-The project uses GitHub Actions for continuous integration. The CI pipeline runs all tests on macOS to ensure compatibility.
+The project uses GitHub Actions for continuous integration. The CI pipeline runs all checks on macOS and Ubuntu.
 
 ## Implementation Details
 
 - Uses the official asdf-vm package from nixpkgs
 - Installs plugins and tool versions during home-manager activation
 - Manages plugin lifecycle (installation and removal)
-- Generates configuration files (.tool-versions, .default-*-packages)
+- Generates configuration files (`.tool-versions`, `.default-*-packages`)
+- Exposes compile-time library paths (`LIBRARY_PATH`, `C_INCLUDE_PATH`, etc.) from `home.packages`
 - Includes direnv integration for project-specific environments
 
-**NOTE**
-Not all plugins are currently included but the plugin install folder is not readonly so normal ASDF plugin install should work
+**NOTE**: Not all asdf plugins have declarative options, but the plugin install folder is not readonly so `asdf plugin add <name>` works normally.

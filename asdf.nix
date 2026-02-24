@@ -27,6 +27,16 @@ in {
       ];
     };
 
+    skipPluginSync = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Skip running `asdf plugin add` and `asdf plugin update --all` during activation.
+        Useful in container environments where plugins are pre-installed
+        at build time and network access at startup is undesirable.
+      '';
+    };
+
     direnv = mkOption {
       description = "Direnv";
       type = types.submodule {
@@ -261,9 +271,26 @@ in {
                 builtins.filter (p: p ? type && p.type == "derivation") config.home.packages
               )
             );
+            packageIncludePaths = concatStringsSep ":" (
+              map (pkg: "${pkg}/include") (
+                builtins.filter (p: p ? type && p.type == "derivation") config.home.packages
+              )
+            );
+
+            packagePkgConfigPaths = concatStringsSep ":" (
+              map (pkg: "${pkg}/lib/pkgconfig") (
+                builtins.filter (p: p ? type && p.type == "derivation") config.home.packages
+              )
+            );
           in ''
             # Ensure PATH includes home-manager paths
             export PATH="${config.home.profileDirectory}/bin:${packageBinPaths}:/nix/var/nix/profiles/default/bin:/usr/bin:/bin:$PATH"
+
+            # Expose nix-provided libraries for compiling runtimes from source (e.g. python-build)
+            export LIBRARY_PATH="${packageLibnPaths}''${LIBRARY_PATH:+:$LIBRARY_PATH}"
+            export C_INCLUDE_PATH="${packageIncludePaths}''${C_INCLUDE_PATH:+:$C_INCLUDE_PATH}"
+            export LD_LIBRARY_PATH="${packageLibnPaths}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+            export PKG_CONFIG_PATH="${packagePkgConfigPaths}''${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
 
             export MAKE_OPTS=-j$(nproc)
             export RUBY_CONFIGURE_OPTS="--with-libyaml-dir=${pkgs.libyaml.dev}" # This is required for ruby to discover libyaml
@@ -276,7 +303,7 @@ in {
               installed_plugins=$(${cfg.package}/bin/asdf plugin list 2>/dev/null || echo "")
 
               # Install configured plugins
-              ${concatMapStringsSep "\n" (plugin: ''
+              ${optionalString (!cfg.skipPluginSync) (concatMapStringsSep "\n" (plugin: ''
                 if ! echo "$installed_plugins" | grep -q "^${plugin}$"; then
                   echo "Installing plugin: ${plugin}"
                   ${if plugin == "golang" then ''
@@ -286,11 +313,13 @@ in {
                   ''}
                 fi
               '')
-              cfg.plugins}
+              cfg.plugins)}
 
               # Update all plugins to latest versions
-              echo "Updating plugins..."
-              ${cfg.package}/bin/asdf plugin update --all
+              ${optionalString (!cfg.skipPluginSync) ''
+                echo "Updating plugins..."
+                ${cfg.package}/bin/asdf plugin update --all
+              ''}
 
               # Install configured tool versions
               if [ -f "$HOME/.tool-versions" ]; then
