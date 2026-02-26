@@ -27,6 +27,16 @@ in {
       ];
     };
 
+    autoInstall = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Automatically run `asdf install` when entering a directory with a
+        `.tool-versions` file that requires versions not yet installed.
+        Adds a chpwd hook (zsh) and PROMPT_COMMAND hook (bash).
+      '';
+    };
+
     skipPluginSync = mkOption {
       type = types.bool;
       default = false;
@@ -372,6 +382,40 @@ in {
           ".default-ruby-packages".text = builtins.concatStringsSep "\n" cfg.ruby.defaultPackages;
         };
       };
+    })
+
+    (mkIf cfg.autoInstall {
+      programs.zsh.initExtra = mkAfter ''
+        __asdf_auto_install() {
+          if [ -f .tool-versions ]; then
+            while IFS=' ' read -r plugin version; do
+              [[ "$plugin" == \#* || -z "$plugin" ]] && continue
+              if ! asdf where "$plugin" "$version" &>/dev/null; then
+                echo "asdf: installing $plugin $version ..."
+                asdf install "$plugin" "$version"
+              fi
+            done < .tool-versions
+          fi
+        }
+        autoload -Uz add-zsh-hook
+        add-zsh-hook chpwd __asdf_auto_install
+        __asdf_auto_install  # run once for initial directory
+      '';
+
+      programs.bash.initExtra = mkAfter ''
+        __asdf_auto_install() {
+          if [ -f .tool-versions ]; then
+            while IFS=' ' read -r plugin version; do
+              [[ "$plugin" == \#* || -z "$plugin" ]] && continue
+              if ! asdf where "$plugin" "$version" &>/dev/null 2>&1; then
+                echo "asdf: installing $plugin $version ..."
+                asdf install "$plugin" "$version"
+              fi
+            done < .tool-versions
+          fi
+        }
+        __asdf_auto_install
+      '';
     })
 
     (mkIf cfg.direnv.enable {
